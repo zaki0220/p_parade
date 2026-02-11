@@ -1,0 +1,211 @@
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kavoon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- タブ -->
+<div class="tabs">
+    <button class="tab active" data-tab="view">抽選</button>
+    <button class="tab" data-tab="idol">抽選アイドル管理</button>
+    <button class="tab" data-tab="performer">演者管理</button>
+    <button class="tab" data-tab="admin">管理</button>
+</div>
+
+<!-- 抽選タブ -->
+<div class="tab-content active" id="tab-view">
+    <!-- ロゴ + Vol -->
+    <div class="logo">
+        <div class="image-block">
+            <div class="top-area">
+                <img class="logo-img" src="image/etc/NewP_Prade_logo.png" alt="logo">
+                <div id="vol-text">
+                    <span class="vol-label">Vol.</span>
+                    <span class="vol-count">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 抽選結果表 -->
+    <div id="lottery-container">
+        <table id="lottery-table" class="main-lottery">
+            <tbody>
+                <tr class="row-semi-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+                <tr class="row-regular"><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <h4 style="margin-top: 10px; margin-left: 25px; margin-bottom: 0;">＜補欠枠＞</h4>
+
+        <table id="lottery-table" class="backup-lottery">
+            <tbody>
+                <tr class="row-backup"><td></td><td></td></tr>
+                <tr class="row-backup"><td></td><td></td></tr>
+                <tr class="row-backup"><td></td><td></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 抽選ボタン -->
+    <div class="lottery-control-panel">
+        <button id="btn-lot-confirmed" class="lot-btn">確定抽選</button>
+        <button id="btn-lot-priority" class="lot-btn">優先抽選</button>
+        <button id="btn-lot-regular" class="lot-btn">通常抽選</button>
+        <button id="clear-lottery" class="lot-btn delete-btn">結果リセット</button>
+    </div>
+</div>
+
+<!-- 抽選アイドル管理タブ -->
+<div id="tab-idol" class="tab-content">
+    <h2>抽選アイドル管理</h2>
+    <div class="idol-control-wrapper">
+    </div>
+
+    <!-- フィルタ -->
+    <div class="idol-filter-area">
+        <label>前回抽選：
+            <select id="filter-prev">
+                <option value="all">すべて</option>
+                <option value="true">ON</option>
+                <option value="false">OFF</option>
+            </select>
+        </label>
+        <label>抽選済：
+            <select id="filter-done">
+                <option value="all">すべて</option>
+                <option value="true">ON</option>
+                <option value="false">OFF</option>
+            </select>
+        </label>
+        <label>ブランド：
+            <select id="filter-brand">
+                <option value="all">すべて</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="idol-box" style="margin-top:20px;">
+        <span class="idol-box-title">一括操作</span>
+        <div class="add-row" style="margin-top:8px;">
+            <button id="clear-idol-checkboxes">全チェック解除</button>
+            <button id="reset-sort-id">ID順にリセット</button>
+        </div>
+    </div>
+
+    <!-- 一覧表 -->
+    <table id="idol-table">
+        <thead>
+            <tr>
+                <th>前回抽選</th>
+                <th>抽選済</th>
+                <th data-sort="name">名前</th>
+                <th data-sort="brand">ブランド</th>
+                <th data-sort="winCount">当選回数</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- 演者管理タブ -->
+<div id="tab-performer" class="tab-content">
+    <h2>演者管理</h2>
+
+    <div class="admin-panel" style="margin-bottom: 20px;">
+        <label><b>準レギュラー設定:</b></label>
+        <select id="semi-regular-select" style="padding: 5px; margin-left: 10px;">
+            <option value="">（未選択）</option>
+            <option value="colorfu√">colorfu√</option>
+            <option value="MitsubaProject">MitsubaProject</option>
+            <option value="わたげ改">わたげ改</option>
+            <option value="黒糖">黒糖</option>
+        </select>
+    </div>
+
+    <div class="performer-control-wrapper">
+        <button id="clear-performer-table" class="delete-btn">全削除</button>
+    </div>
+
+    <table id="performer-table">
+        <thead>
+            <tr>
+                <th>除外</th>
+                <th>優先</th>
+                <th>確定</th>
+                <th data-sort="name">名前</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- 管理タブ -->
+<div id="tab-admin" class="tab-content">
+    <h2>Vol 管理</h2>
+    <div class="admin-panel">
+        <input id="count-input" type="number" min="0" step="1">
+    </div>
+
+    <!-- 文字列置換フォーム -->
+    <div class="admin-panel-string">
+        <input type="text" id="vol-string-input" placeholder="Vol 表示を置き換える文字列">
+        <label style="margin-left:8px;">
+            <input type="checkbox" id="vol-string-enable"> 有効
+        </label>
+    </div>
+
+    <h2>演出管理</h2>
+    <div class="admin-panel-direction">
+        <label class="toggle-switch">
+            <input type="checkbox" id="mute-toggle">
+            <span class="slider"></span>
+            <span class="toggle-label">ミュート</span>
+        </label><br>
+        <label class="toggle-switch">
+            <input type="checkbox" id="brand-toggle">
+            <span class="slider"></span>
+            <span class="toggle-label">名前の横に表示する画像をブランドマークのみにする</span>
+        </label><br>
+        <label class="toggle-switch">
+            <input type="checkbox" id="puchun-toggle">
+            <span class="slider"></span>
+            <span class="toggle-label">プチュン演出を有効にする</span>
+        </label>
+    </div>
+</div>
+
+<!-- 抽選時の映像 -->
+<!-- 封筒 -->
+<div id="deresute-overlay" style="display:none;">
+    <video
+        id="deresute-video"
+        src="movie/deresute.webm"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+    ></video>
+</div>
+
+<!-- プチュン -->
+<div id="puchun-overlay" style="display:none;">
+    <video id="puchun-video" src="movie/puchun.mp4"></video>
+</div>
+
+<!-- TOUCH -->
+<div id="click-overlay" style="display:none;">
+    <video id="click-video" src="movie/touch.mp4" loop></video>
+</div>
+
+<script src="backend/manage.js"></script>
+</body>
+</html>

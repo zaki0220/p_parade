@@ -1,0 +1,530 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.logo-img {
+    max-height: 300px;
+    width: auto;
+}
+
+.image-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 12px;
+}
+
+.top-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+}
+
+.top-area img.logo-img {
+    height: auto !important;
+    height: 432px;
+    width: auto;
+}
+
+#vol-text {
+    font-family: 'Kavoon', cursive;
+    font-size: 130px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.vol-label {
+    color: #FFFFFF;
+    -webkit-text-stroke: 1.8px #000000;
+}
+
+.vol-count {
+    color: #FFDD7B;
+    -webkit-text-stroke: 1.8px #000000;
+}
+
+#tab-view {
+    background-color: #BCE981;
+    min-height: 100%;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 2px solid #555;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 12px;
+    margin-left: 24px;
+}
+
+.tab:hover {
+    background-color: #e0e0ff;
+}
+
+.tab.active {
+    background-color: #FFDD7B;
+    border-color: #333;
+    color: #000;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.admin-panel {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    white-space: nowrap;
+}
+
+.idol-control-wrapper,
+.performer-control-wrapper {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: stretch;
+}
+
+.idol-box,
+.performer-box {
+    border: 1px solid #ccc;
+    padding: 12px;
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.idol-box-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+#idol-table th[data-sort="winCount"],
+#idol-table td[data-column="winCount"] {
+    width: 60px;
+    text-align: center;
+}
+
+td.editable-winCount {
+    cursor: pointer;
+    text-align: center;
+}
+
+#lottery-header-text {
+    height: 72px; 
+    position: relative;
+    width: 1521px;   /* 表幅と揃える */
+    margin-left: 24px;
+    display: grid;
+    grid-template-columns: 20% 80%;  /* #lottery-table の列幅と連動 */
+}
+
+#lottery-header-text .lottery-col:first-child {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#lottery-header-text .lottery-col:last-child {
+    flex: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#lottery-header-text .lottery-col {
+    font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+    text-align: center;
+    font-weight: 700;
+    font-size: 43px; /* WQHDでの表示に固定 */
+    color: #FFFFFF;
+
+    text-shadow:
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 -2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 2px 0 #000;
+
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+}
+
+#lottery-table {
+    font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+    font-size: 24px;
+    font-weight: lighter;
+    border-collapse: collapse;
+    width: 1690px;
+    table-layout: fixed;
+    margin: 0 0 0 24px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-top: 6px;
+}
+
+#lottery-table tr {
+    height: 72px; /* 行の高さを統一 */
+}
+
+#lottery-table td {
+    height: 72px;             /* ヘッダーと同じ高さに固定 */
+    text-align: center;       /* 横中央 */
+    vertical-align: middle;   /* 縦中央 */
+}
+
+.lottery-select-btn {
+    height: 40px;          /* ボタン高さ固定 */
+    line-height: 40px;
+    font-size: 14px;
+}
+
+#lottery-table td:first-child {
+    width: 20%;
+    background-color: #90FFF4;
+}
+
+#lottery-table td:last-child {
+    width: 80%;               /* 右列4 */
+    background-color: transparent;
+}
+
+#lottery-table td:first-child,
+#lottery-table td:last-child,
+
+#performer-table td,
+#performer-table th {
+    padding: 8px 12px;
+    text-align: center;
+}
+
+#performer-table td:last-child {
+    width: 80px;
+}
+
+#performer-table th[data-sort="loseCount"],
+#performer-table td[data-column="loseCount"] {
+    width: 80px;
+}
+
+.admin-panel-string {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-panel-string input[type="text"] {
+    width: 200px;
+    padding: 4px 8px;
+}
+
+#results-table {
+    border-collapse: collapse;
+    width: 66%;
+    table-layout: fixed;
+    margin: 16px 0 0 24px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#results-table tr {
+    height: 60px;
+}
+
+#results-table td, #results-table th {
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 16px;
+    padding: 20px 16px;
+}
+
+/* --- 抽選テーブルの行タイプ別設定 --- */
+
+/* 1. 準レギュラー枠（1行目）: 少し濃いめの青 */
+.row-semi-regular td:first-child {
+    background-color: #56CCF2 !important; /* 水色を強調 */
+    
+}
+
+/* 2. 通常枠（2〜7行目）: 現状維持（#90FFF4） */
+.row-regular td:first-child {
+    background-color: #90FFF4;
+}
+
+/* 3. 補欠ヘッダー行: 区切りとして表示 */
+.row-header td {
+    height: 40px !important;
+    background-color: #333 !important;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: none;
+}
+
+/* 4. 補欠枠（8〜10行目）: オレンジ・黄色系で区別 */
+.row-backup td:first-child {
+    background-color: #FFD180 !important; /* 補欠らしい色 */
+}
+
+/* 共通：名前が入った時の文字サイズ調整 */
+#lottery-table td:first-child {
+    font-family: 'Kosugi Maru', sans-serif;
+    font-size: 24px;
+    color: #333;
+}
+
+/* 抽選ボタンの配置調整 */
+.lottery-control-panel {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.lot-btn {
+    padding: 10px 20px;
+    margin-top: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: 0.2s;
+}
+#btn-lot-confirmed { 
+    background-color: #eb5757; /* 赤：確定 */
+    margin-left: 24px;
+}
+#btn-lot-priority  { 
+    background-color: #f2994a; /* 橙：優先 */
+}
+#btn-lot-regular {
+    background-color: #27ae60; /* 緑：通常 */
+}
+#clear-lottery {
+    background-color: #555555; /* グレー：リセット*/
+}
+.lot-btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+/* アイドル抽選ボタン */
+.lottery-execution-btn {
+    font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #FFDD78;
+    transition: 0.2s;
+}
+
+/* 背景が途切れる問題：html/body全体に適用 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background-attachment: fixed; /* これでスクロールしても背景が動かない */
+}
+
+/* 抽選タブの背景範囲を修正 */
+#tab-view {
+    background-color: #BCE981;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 50px;
+}
+
+/* 補欠ヘッダー：高さを詰め、文字をはっきりさせる */
+.row-header {
+    height: 32px !important;
+}
+
+.row-header td {
+    height: 32px !important;
+    background-color: #333 !important; /* 黒背景 */
+    color: #fff !important;           /* 白文字 */
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 !important;
+    line-height: 32px;
+    border: none;
+    text-align: center;
+}
+
+/* 準レギュラー（1行目）の色強調 */
+.row-semi-regular td:first-child {
+    background-color: #56CCF2 !important;
+}
+
+/* 補欠枠（8-10行目）の色 */
+.row-backup td:first-child {
+    background-color: #FFD180 !important;
+}
+
+/* アイドルアイコン表示用 */
+.idol-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.idol-icon {
+    width: 30px;
+    height: auto;
+    object-fit: contain;
+}
+
+.idol-name {
+    white-space: nowrap;
+    font-weight: lighter;
+}
+
+#puchun-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#puchun-video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画面を覆いつくす */
+}
+
+#click-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#click-video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画面を覆いつくす */
+}
+
+#deresute-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#deresute-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 画面を覆いつくす */
+}
+
+/* 管理画面のトグルスイッチ */
+.toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin-bottom: 6px;
+}
+
+/* チェックボックス本体は非表示 */
+.toggle-switch input {
+    display: none;
+}
+
+/* スイッチ背景 */
+.slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 999px;
+    transition: background-color 0.3s;
+}
+
+/* 丸いツマミ */
+.slider::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* ON時 */
+.toggle-switch input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+.toggle-switch input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+/* テキスト */
+.toggle-label {
+    font-size: 14px;
+}
