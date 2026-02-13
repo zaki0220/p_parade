@@ -468,7 +468,6 @@ function initAllEvents() {
         });
         saveLotteryTable();
     });
-    
 
     // 【重要】テーブル内の「抽選」ボタンクリック処理（イベント委譲）
     // 親要素の lottery-container で検知することで補欠枠のボタンにも対応
