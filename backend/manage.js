@@ -225,40 +225,44 @@ function renderPerfTable() {
 // 【修正】アイドルを3名（最大）選出して文字列で返す
 function pickThreeIdols() {
     const candidates = idolList.filter(i => !i.prev && !i.done);
-    if (candidates.length === 0) return "候補なし";
-    
+    if (candidates.length === 0) {
+    return {
+        html: "候補なし",
+        puchunFlg: false,
+        noCandidate: true
+    };
+}
+
     const selectedNames = [];
     const selectedWinner = [];
-    const countToPick = Math.min(3, candidates.length); // 最大3人、候補が少なければその人数
+    const countToPick = Math.min(3, candidates.length);
 
     const puchunEnabled = localStorage.getItem(PUCHUN_TOGGLE_KEY) === "true";
     const brandEnabled = localStorage.getItem(BRAND_TOGGLE_KEY) === "true";
     const randomFlg = Math.random() < 0.5;
-    
+
     for (let i = 0; i < countToPick; i++) {
-        // 毎回候補を再計算しないと、同じリストから重複して引く可能性があるため、
-        // インデックス指定でspliceするのが確実ですが、今回は簡易的にランダムPick＆除外で実装
-        const currentCandidates = idolList.filter(item => !item.prev && !item.done); // 直前のループでdoneになった人を除外
+        const currentCandidates = idolList.filter(item => !item.prev && !item.done);
         if(currentCandidates.length === 0) break;
-        
+
         const randomIndex = Math.floor(Math.random() * currentCandidates.length);
         const winner = currentCandidates[randomIndex];
-        
+
         winner.done = true;
         winner.winCount = (winner.winCount || 0) + 1;
-        selectedWinner.push(winner)
+
+        selectedWinner.push(winner);
         selectedNames.push(getIdolDisplayHTML(winner, brandEnabled));
     }
-    // デバッグ用
-    console.log("抽選されたアイドル:", selectedWinner);
 
-    // 封筒
-    showDeresuteMovie(selectedWinner.some(item => item.id === 2046) && puchunEnabled && randomFlg);
-    
     saveData();
     renderIdolTable();
-    syncToSpreadsheet(); 
-    return selectedNames.join(" / ");
+    syncToSpreadsheet();
+
+    return {
+        html: selectedNames.join(" / "),
+        puchunFlg: selectedWinner.some(i => i.id === 2046) && puchunEnabled && randomFlg
+    };
 }
 
 // アイコン用HTML作成
@@ -282,67 +286,70 @@ function getIdolDisplayHTML(idol, brandFlg) {
 }
 
 // 封筒
-function showDeresuteMovie(puchunFlg) {
-    const overlay = document.getElementById("deresute-overlay");
-    const deresute = document.getElementById("deresute-video");
-    const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
-    if (!overlay || !deresute) return;
+function showDeresuteMovie() {
+    return new Promise(resolve => {
+        const overlay = document.getElementById("deresute-overlay");
+        const video = document.getElementById("deresute-video");
+        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
+        if (!overlay || !video) return resolve();
 
-    overlay.style.display = "flex";
+        overlay.style.display = "flex";
 
-    deresute.currentTime = 0;
-    deresute.muted = muteEnabled;   // オンオフ
-    deresute.play();
+        video.currentTime = 0;
+        video.muted = muteEnabled;
+        video.play();
 
-    // 封筒終了 -> プチュン判定
-    deresute.onended = () => {
-        overlay.style.display = "none";
-        if (puchunFlg) {
-            showPuchunMovie()
-        }
-    };
+        video.onended = () => {
+            overlay.style.display = "none";
+            resolve();
+        };
+    });
 }
 
 // プチュン
 function showPuchunMovie() {
-    const overlay = document.getElementById("puchun-overlay");
-    const puchun = document.getElementById("puchun-video");
-    const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
-    if (!overlay || !puchun) return;
+    return new Promise(resolve => {
+        const overlay = document.getElementById("puchun-overlay");
+        const video = document.getElementById("puchun-video");
+        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
+        if (!overlay || !video) return resolve();
 
-    overlay.style.display = "flex";
-    
-    puchun.currentTime = 0;
-    puchun.muted = muteEnabled;   // オンオフ
-    puchun.play();
-    // ★ プチュン終了 -> click演出
-    puchun.onended = () => {
-        overlay.style.display = "none";
-        showClickMovie();
-    };
-    // プチュン中クリックは無効（誤操作防止）
-    overlay.onclick = null;
+        overlay.style.display = "flex";
+
+        video.currentTime = 0;
+        video.muted = muteEnabled;
+        video.play();
+
+        video.onended = () => {
+            overlay.style.display = "none";
+            resolve();
+        };
+
+        overlay.onclick = null;
+    });
 }
 
 // CLICK
 function showClickMovie() {
-    const overlay = document.getElementById("click-overlay");
-    const click = document.getElementById("click-video");
-    const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
-    if (!overlay || !click) return;
+    return new Promise(resolve => {
+        const overlay = document.getElementById("click-overlay");
+        const video = document.getElementById("click-video");
+        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
+        if (!overlay || !video) return resolve();
 
-    overlay.style.display = "flex";
+        overlay.style.display = "flex";
 
-    click.currentTime = 0;
-    click.muted = muteEnabled;   // 自動再生対策
-    click.loop = true;    // ★ ループ
-    click.play();
+        video.currentTime = 0;
+        video.muted = muteEnabled;
+        video.loop = true;
+        video.play();
 
-    // クリックで終了
-    overlay.onclick = () => {
-        click.pause();
-        overlay.style.display = "none";
-    };
+        overlay.onclick = () => {
+            video.pause();
+            overlay.style.display = "none";
+            resolve();
+        };
+    });
 }
 
 
@@ -464,16 +471,25 @@ function initAllEvents() {
 
     // 【重要】テーブル内の「抽選」ボタンクリック処理（イベント委譲）
     // 親要素の lottery-container で検知することで補欠枠のボタンにも対応
-    document.getElementById("lottery-container")?.addEventListener("click", (e) => {
+    document.getElementById("lottery-container")?.addEventListener("click", async (e) => {
         if (e.target.tagName === "BUTTON" && e.target.textContent === "アイドル抽選") {
+
             const cell = e.target.closest("td");
             const name = cell.previousElementSibling.textContent.trim();
-            
-            if (name !== "") {
-                const result = pickThreeIdols(); 
-                cell.innerHTML = result; 
-                saveLotteryTable();
+            if (!name) return;
+
+            const result = pickThreeIdols();
+
+            await showDeresuteMovie();
+
+            if (result.puchunFlg) {
+                await showPuchunMovie();
+                await showClickMovie();
             }
+
+            // 🎯 ここで初めて結果表示
+            cell.innerHTML = result.html;
+            saveLotteryTable();
         }
     });
 
