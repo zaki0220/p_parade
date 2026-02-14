@@ -80,6 +80,7 @@ body {
 }
 
 .tab-content {
+    margin-left: 24px;
     display: none;
 }
 
@@ -141,7 +142,6 @@ td.editable-winCount {
     height: 72px; 
     position: relative;
     width: 1521px;   /* 表幅と揃える */
-    margin-left: 24px;
     display: grid;
     grid-template-columns: 20% 80%;  /* #lottery-table の列幅と連動 */
 }
