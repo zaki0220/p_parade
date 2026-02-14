@@ -484,6 +484,7 @@ body {
     align-items: center;
     gap: 12px;
     cursor: pointer;
+    margin-top: 6px;
     margin-bottom: 6px;
 }
 
@@ -529,28 +530,32 @@ body {
     font-size: 14px;
 }
 
+/* 音量スライダーの配置 */
+.slider-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
 
-/* 音量スライダー */
-.volume-wrapper {
+/* 絵文字のズレ補正 */
+.volume-icon {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #333;
-    user-select: none;
+    font-size: 16px;
+    line-height: 1;
 }
 
 /* スライダー本体 */
 #volume-slider {
     appearance: none;
     -webkit-appearance: none;
-    -moz-appearance: none;
     width: 150px;
     height: 6px;
     background: #ddd;
     border-radius: 10px;
     outline: none;
-    transition: background 0.3s;
+    
 }
 
 /* ホバー時 */
@@ -560,14 +565,14 @@ body {
 
 /* つまみ（Chrome, Edge） */
 #volume-slider::-webkit-slider-thumb {
+    appearance: none;
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
     background: #4CAF50;
     border-radius: 50%;
     cursor: pointer;
-    border: none;
-    transition: 0.2s;
+    transition: background-color 0.3s;
 }
 
 #volume-slider::-webkit-slider-thumb:hover {
@@ -581,5 +586,5 @@ body {
     background: #4CAF50;
     border-radius: 50%;
     cursor: pointer;
-    border: none;
+    transition: background-color 0.3s;
 }
