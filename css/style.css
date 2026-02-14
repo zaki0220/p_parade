@@ -528,3 +528,58 @@ body {
 .toggle-label {
     font-size: 14px;
 }
+
+
+/* 音量スライダー */
+.volume-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #333;
+    user-select: none;
+}
+
+/* スライダー本体 */
+#volume-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 150px;
+    height: 6px;
+    background: #ddd;
+    border-radius: 10px;
+    outline: none;
+    transition: background 0.3s;
+}
+
+/* ホバー時 */
+#volume-slider:hover {
+    background: #ccc;
+}
+
+/* つまみ（Chrome, Edge） */
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+#volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* つまみ（Firefox） */
+#volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}

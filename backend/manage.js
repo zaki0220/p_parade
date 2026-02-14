@@ -16,6 +16,7 @@ const MUTE_TOGGLE_KEY = "muteEnabled";
 const puchunToggle = document.getElementById("puchun-toggle");
 const brandTggle = document.getElementById("brand-toggle");
 const muteTggle = document.getElementById("mute-toggle");
+const VOLUME_KEY = "globalVolume";
 
 let idolList = JSON.parse(localStorage.getItem(IDOL_KEY) || "[]");
 let performerList = JSON.parse(localStorage.getItem(PERF_KEY) || "[]");
@@ -296,7 +297,7 @@ function showDeresuteMovie() {
         overlay.style.display = "flex";
 
         video.currentTime = 0;
-        video.muted = muteEnabled;
+        applyVolumeToMedia(video);
         video.play();
 
         video.onended = () => {
@@ -317,7 +318,7 @@ function showPuchunMovie() {
         overlay.style.display = "flex";
 
         video.currentTime = 0;
-        video.muted = muteEnabled;
+        applyVolumeToMedia(video);
         video.play();
 
         video.onended = () => {
@@ -340,7 +341,7 @@ function showClickMovie() {
         overlay.style.display = "flex";
 
         video.currentTime = 0;
-        video.muted = muteEnabled;
+        applyVolumeToMedia(video);
         video.loop = true;
         video.play();
 
@@ -556,6 +557,22 @@ function initAllEvents() {
     ["filter-prev", "filter-done", "filter-brand"].forEach(id => {
         document.getElementById(id)?.addEventListener("change", renderIdolTable);
     });
+
+    // 音量スライダー
+    const volumeSlider = document.getElementById("volume-slider");
+    if (volumeSlider) {
+        volumeSlider.value = getGlobalVolume();
+
+        volumeSlider.addEventListener("input", () => {
+            const volume = parseFloat(volumeSlider.value);
+            localStorage.setItem(VOLUME_KEY, volume);
+
+            // 今再生中の動画にも即時反映
+            document.querySelectorAll("video").forEach(v => {
+                v.volume = volume;
+            });
+        });
+    }
 }
 
 // ==============================
@@ -590,6 +607,11 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+    // 初期音量適用
+    document.querySelectorAll("video").forEach(v => {
+        v.volume = getGlobalVolume();
+    });
+
     const savedSemi = localStorage.getItem("selectedSemiRegular");
     const semiSelect = document.getElementById("semi-regular-select");
     if (semiSelect && savedSemi) semiSelect.value = savedSemi;
@@ -601,3 +623,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await loadFromSpreadsheet();
 });
+
+// ==============================
+// 5. 音量制御
+// ==============================
+function getGlobalVolume() {
+    const v = parseFloat(localStorage.getItem(VOLUME_KEY));
+    return isNaN(v) ? 1 : v;
+}
+
+function applyVolumeToMedia(video) {
+    const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
+
+    video.muted = muteEnabled;
+    video.volume = getGlobalVolume();
+}
