@@ -17,6 +17,7 @@ const puchunToggle = document.getElementById("puchun-toggle");
 const brandTggle = document.getElementById("brand-toggle");
 const muteTggle = document.getElementById("mute-toggle");
 const VOLUME_KEY = "globalVolume";
+const SPECIAL_COUNT_KEY = "specialPerformerCount";
 
 let idolList = JSON.parse(localStorage.getItem(IDOL_KEY) || "[]");
 let performerList = JSON.parse(localStorage.getItem(PERF_KEY) || "[]");
@@ -141,6 +142,72 @@ function updateView() {
         }
     }
     saveData();
+}
+
+// 特殊回管理：vol 表示を文字列に置き換える機能と、それに伴う抽選表の行数調整
+function rebuildLotteryRowsForSpecial() {
+    const specialEnabled = document.getElementById("vol-string-enable")?.checked;
+    const specialCountInput = document.getElementById("performer-count-input");
+    const mainTable = document.querySelector(".main-lottery tbody");
+    const backupTable = document.querySelector(".backup-lottery");
+
+    if (!mainTable || !backupTable) return;
+
+    if (specialEnabled) {
+        // 🔹 補欠枠を非表示
+        backupTable.style.display = "none";
+
+        const count = Number(specialCountInput?.value) || 1;
+
+        // 既存データ保持（壊さない）
+        const existingRows = Array.from(mainTable.querySelectorAll("tr"));
+        const existingData = existingRows.map(r => ({
+            winner: r.cells[0]?.textContent || "",
+            idol: r.cells[1]?.innerHTML || ""
+        }));
+
+        mainTable.innerHTML = "";
+
+        for (let i = 0; i < count; i++) {
+            const tr = document.createElement("tr");
+            tr.className = "row-regular";
+
+            tr.innerHTML = `
+                <td>${existingData[i]?.winner || ""}</td>
+                <td>${existingData[i]?.idol || ""}</td>
+            `;
+            mainTable.appendChild(tr);
+        }
+
+    } else {
+        // 🔹 補欠枠を表示
+        backupTable.style.display = "";
+
+        // 通常構成（元の7行に戻す）
+        const defaultRowCount = 7;
+        const existingRows = Array.from(mainTable.querySelectorAll("tr"));
+        const existingData = existingRows.map(r => ({
+            winner: r.cells[0]?.textContent || "",
+            idol: r.cells[1]?.innerHTML || ""
+        }));
+
+        mainTable.innerHTML = "";
+
+        for (let i = 0; i < defaultRowCount; i++) {
+            const tr = document.createElement("tr");
+
+            if (i === 0) tr.className = "row-semi-regular";
+            else tr.className = "row-regular";
+
+            tr.innerHTML = `
+                <td>${existingData[i]?.winner || ""}</td>
+                <td>${existingData[i]?.idol || ""}</td>
+            `;
+            mainTable.appendChild(tr);
+        }
+    }
+
+    saveLotteryTable();
 }
 
 function updateBackgroundColor(tabName) {
@@ -573,6 +640,26 @@ function initAllEvents() {
             });
         });
     }
+// 特殊回ON/OFF
+    document.getElementById("vol-string-enable")?.addEventListener("change", rebuildLotteryRowsForSpecial);
+
+    // 特殊回人数の保持 + 再構築
+    const performerCountInput = document.getElementById("performer-count-input");
+
+    if (performerCountInput) {
+
+        // 保存済み値を復元
+        const saved = localStorage.getItem(SPECIAL_COUNT_KEY);
+        if (saved !== null) {
+            performerCountInput.value = saved;
+        }
+
+        // 入力時に保存 + 再構築
+        performerCountInput.addEventListener("input", (e) => {
+            localStorage.setItem(SPECIAL_COUNT_KEY, e.target.value);
+            rebuildLotteryRowsForSpecial();
+        });
+    }
 }
 
 // ==============================
@@ -622,6 +709,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateBackgroundColor("view");
 
     await loadFromSpreadsheet();
+
+    rebuildLotteryRowsForSpecial();
 });
 
 // ==============================

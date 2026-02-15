@@ -155,18 +155,25 @@
     <div class="admin-panel">
         <input id="count-input" type="number" min="0" step="1">
     </div>
+    <br>
 
     <h2>特殊回管理</h2>
-    <h3>vol 表示を置き換える文字列</h3>
-    <!-- 文字列置換フォーム -->
-    <div class="admin-panel-string">
-        <input type="text" id="vol-string-input" placeholder="Vol 表示を置き換える文字列">
         <label class="toggle-switch">
             <input type="checkbox" id="vol-string-enable">
             <span class="slider"></span>
-            <span class="toggle-label">有効</span>
+            <span class="toggle-label">特殊回を有効にする</span>
         </label>
+
+    <h3>vol 表示を置き換える文字列</h3>
+    <div class="admin-panel-string">
+        <input type="text" id="vol-string-input" placeholder="Vol 表示を置き換える文字列">
     </div>
+
+    <h3>特殊回の出演者数</h3>
+    <div class="admin-panel-string">
+        <input type="number" id="performer-count-input" min="1" step="1" placeholder="特殊回の出演者数"> 
+    </div>
+    <br>
 
     <h2>音量調節</h2>
     <div class="admin-panel-sound">
