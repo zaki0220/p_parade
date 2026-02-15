@@ -80,6 +80,7 @@ body {
 }
 
 .tab-content {
+    margin-left: 24px;
     display: none;
 }
 
@@ -141,7 +142,6 @@ td.editable-winCount {
     height: 72px; 
     position: relative;
     width: 1521px;   /* 表幅と揃える */
-    margin-left: 24px;
     display: grid;
     grid-template-columns: 20% 80%;  /* #lottery-table の列幅と連動 */
 }
@@ -189,7 +189,7 @@ td.editable-winCount {
     font-size: 24px;
     font-weight: lighter;
     border-collapse: collapse;
-    width: 1690px;
+    width: 96%;
     table-layout: fixed;
     margin: 0 0 0 24px;
     background-color: #ffffff;
@@ -484,6 +484,7 @@ body {
     align-items: center;
     gap: 12px;
     cursor: pointer;
+    margin-top: 6px;
     margin-bottom: 6px;
 }
 
@@ -527,4 +528,63 @@ body {
 /* テキスト */
 .toggle-label {
     font-size: 14px;
+}
+
+/* 音量スライダーの配置 */
+.slider-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+/* 絵文字のズレ補正 */
+.volume-icon {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* スライダー本体 */
+#volume-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 150px;
+    height: 6px;
+    background: #ddd;
+    border-radius: 10px;
+    outline: none;
+    
+}
+
+/* ホバー時 */
+#volume-slider:hover {
+    background: #ccc;
+}
+
+/* つまみ（Chrome, Edge） */
+#volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* つまみ（Firefox） */
+#volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
