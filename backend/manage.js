@@ -358,7 +358,6 @@ function showDeresuteMovie() {
     return new Promise(resolve => {
         const overlay = document.getElementById("deresute-overlay");
         const video = document.getElementById("deresute-video");
-        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
         if (!overlay || !video) return resolve();
 
         overlay.style.display = "flex";
@@ -379,7 +378,6 @@ function showPuchunMovie() {
     return new Promise(resolve => {
         const overlay = document.getElementById("puchun-overlay");
         const video = document.getElementById("puchun-video");
-        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
         if (!overlay || !video) return resolve();
 
         overlay.style.display = "flex";
@@ -402,7 +400,6 @@ function showClickMovie() {
     return new Promise(resolve => {
         const overlay = document.getElementById("click-overlay");
         const video = document.getElementById("click-video");
-        const muteEnabled = localStorage.getItem(MUTE_TOGGLE_KEY) === "true";
         if (!overlay || !video) return resolve();
 
         overlay.style.display = "flex";
