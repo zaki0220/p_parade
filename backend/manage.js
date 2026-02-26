@@ -309,6 +309,8 @@ function pickThreeIdols() {
     const brandEnabled = localStorage.getItem(BRAND_TOGGLE_KEY) === "true";
     const randomFlg = Math.random() < 0.5;
 
+    let winnerList = [];
+
     for (let i = 0; i < countToPick; i++) {
         const currentCandidates = idolList.filter(item => !item.prev && !item.done);
         if(currentCandidates.length === 0) break;
@@ -321,6 +323,7 @@ function pickThreeIdols() {
 
         selectedWinner.push(winner);
         selectedNames.push(getIdolDisplayHTML(winner, brandEnabled));
+        winnerList.push(winner);
     }
 
     saveData();
@@ -329,7 +332,8 @@ function pickThreeIdols() {
 
     return {
         html: selectedNames.join(" / "),
-        puchunFlg: selectedWinner.some(i => i.id === 2046) && puchunEnabled && randomFlg
+        puchunFlg: selectedWinner.some(i => i.id === 2046) && puchunEnabled && randomFlg,
+        winnerList: winnerList
     };
 }
 
@@ -544,6 +548,13 @@ function initAllEvents() {
             if (!name) return;
 
             const result = pickThreeIdols();
+
+            const performerAndIdols = {
+                performer: name,
+                idols: result.winnerList
+            };
+            // 抽選結果をJSONにし、ファイル出力させる
+            console.log("抽選結果:", performerAndIdols);
 
             await showDeresuteMovie();
 
