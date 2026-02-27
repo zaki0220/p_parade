@@ -492,6 +492,37 @@ body {
     margin-bottom: 6px;
 }
 
+/* ------------------------------------------------------------------
+   Full HD (1920×1080) scaling
+   ─────────────────────────────────────────────────────────────────
+   The original styles were designed for WQHD (2560×1440).  On a
+   Full‑HD display the UI would appear 25% larger, so we scale everything
+   down to maintain the same visual proportions.  The transform approach
+   keeps all element ratios intact without rewriting every hard‑coded
+   pixel value.
+
+   The `width:133.33%` counteracts the shrinkage so the page still fills
+   the viewport horizontally.  Heights automatically behave due to the
+   scale factor.
+
+   Note: if you prefer a different scaling strategy (root font‑size,
+   CSS variables, etc.) you can adjust the factor here.
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 1920px) and (max-height: 1080px) {
+    body {
+        transform: scale(0.75);
+        transform-origin: top left;
+        width: 133.3333%; /* inverse of 0.75 */
+        /* ensure minimum height expands to account for scaling */
+        min-height: calc(100vh / 0.75);
+    }
+    /* ensure tab view also stretches under scaling */
+    #tab-view {
+        min-height: calc(100vh / 0.75);
+        width: 100%;
+    }
+}
+
 /* チェックボックス本体は非表示 */
 .toggle-switch input {
     display: none;
