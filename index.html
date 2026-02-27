@@ -12,6 +12,7 @@
     <button class="tab active" data-tab="view">抽選</button>
     <button class="tab" data-tab="idol">抽選アイドル管理</button>
     <button class="tab" data-tab="performer">演者管理</button>
+    <button class="tab" data-tab="appearance">出演管理</button>
     <button class="tab" data-tab="admin">設定</button>
 </div>
 
@@ -146,6 +147,19 @@
         </thead>
         <tbody></tbody>
     </table>
+</div>
+
+<!-- 出演管理タブ -->
+<div id="tab-appearance" class="tab-content">
+    <h2>出演管理</h2>
+    <!-- 出演登録ボタン -->
+    <div class="lottery-control-panel" style="margin-top:8px;">
+        <button id="register-appearance" class="lot-btn">出演登録</button>
+    </div>
+    <!-- 抽選履歴表示エリア -->
+    <div id="history-container" style="margin-top:16px;">
+        <!-- JSでテーブルを生成 -->
+    </div>
 </div>
 
 <!-- 管理タブ -->

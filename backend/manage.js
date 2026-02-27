@@ -18,11 +18,66 @@ const brandTggle = document.getElementById("brand-toggle");
 const muteTggle = document.getElementById("mute-toggle");
 const VOLUME_KEY = "globalVolume";
 const SPECIAL_COUNT_KEY = "specialPerformerCount";
+const HISTORY_KEY = "lotteryHistory"; // localStorageキー
 
 let idolList = JSON.parse(localStorage.getItem(IDOL_KEY) || "[]");
 let performerList = JSON.parse(localStorage.getItem(PERF_KEY) || "[]");
 let count = Number(localStorage.getItem(VOL_STORAGE_KEY)) || 0;
 let volConfig = JSON.parse(localStorage.getItem(VOL_STR_KEY) || '{"enabled":false, "text":""}');
+
+// 抽選履歴（performerAndIdols オブジェクトを保存）
+let lotteryHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); // ロード時に復元
+
+// 指定した文字列がidol構造を持っているか判定し
+// レンタリングに使うヘルパー
+function getIdolsText(idols) {
+    if (!Array.isArray(idols)) return "";
+    return idols.map(i => i.name || "").join(" / ");
+}
+
+// ==============================
+// 履歴の描画
+// ==============================
+function renderLotteryHistory() {
+    const container = document.getElementById("history-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (lotteryHistory.length === 0) {
+        container.textContent = "抽選履歴はありません。";
+        return;
+    }
+
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+    table.style.width = "90%";
+
+    const thead = document.createElement("thead");
+    thead.innerHTML = `
+        <tr>
+            <th style="border:1px solid #ccc;padding:8px;">#</th>
+            <th style="border:1px solid #ccc;padding:8px;">演者</th>
+            <th style="border:1px solid #ccc;padding:8px;">当選アイドル</th>
+            <th style="border:1px solid #ccc;padding:8px;">出演</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    lotteryHistory.forEach((entry, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="border:1px solid #ccc;padding:8px; text-align:center;">${idx+1}</td>
+            <td style="border:1px solid #ccc;padding:8px;">${entry.performer || ""}</td>
+            <td style="border:1px solid #ccc;padding:8px;">${getIdolsText(entry.idols)}</td>
+            <td style="border:1px solid #ccc;padding:8px; text-align:center;"><input type="checkbox" class="history-checkbox"></td>
+        `;
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    container.appendChild(table);
+}
 
 let idolSortKey = "id", idolSortAsc = true;
 let perfSortKey = "name", perfSortAsc = true;
@@ -309,6 +364,8 @@ function pickThreeIdols() {
     const brandEnabled = localStorage.getItem(BRAND_TOGGLE_KEY) === "true";
     const randomFlg = Math.random() < 0.5;
 
+    let winnerList = [];
+
     for (let i = 0; i < countToPick; i++) {
         const currentCandidates = idolList.filter(item => !item.prev && !item.done);
         if(currentCandidates.length === 0) break;
@@ -321,6 +378,7 @@ function pickThreeIdols() {
 
         selectedWinner.push(winner);
         selectedNames.push(getIdolDisplayHTML(winner, brandEnabled));
+        winnerList.push(winner);
     }
 
     saveData();
@@ -329,7 +387,8 @@ function pickThreeIdols() {
 
     return {
         html: selectedNames.join(" / "),
-        puchunFlg: selectedWinner.some(i => i.id === 2046) && puchunEnabled && randomFlg
+        puchunFlg: selectedWinner.some(i => i.id === 2046) && puchunEnabled && randomFlg,
+        winnerList: winnerList
     };
 }
 
@@ -531,6 +590,11 @@ function initAllEvents() {
                 }
             }
         });
+        // 履歴もリセット
+        lotteryHistory = [];
+        saveLotteryHistory(lotteryHistory);
+        renderLotteryHistory();
+
         saveLotteryTable();
     });
 
@@ -544,6 +608,15 @@ function initAllEvents() {
             if (!name) return;
 
             const result = pickThreeIdols();
+
+            const performerAndIdols = {
+                performer: name,
+                idols: result.winnerList
+            };
+            // 抽選結果を履歴リストに追加
+            lotteryHistory.push(performerAndIdols);
+            saveLotteryHistory(lotteryHistory);
+            renderLotteryHistory();
 
             await showDeresuteMovie();
 
@@ -562,6 +635,42 @@ function initAllEvents() {
     document.getElementById("btn-import")?.addEventListener("click", loadFromSpreadsheet);
     document.getElementById("btn-export")?.addEventListener("click", async () => {
         if(confirm("GASへ同期しますか？")) { await syncToSpreadsheet(); alert("完了"); }
+    });
+
+    // 出演登録ボタンの処理
+    document.getElementById("register-appearance")?.addEventListener("click", () => {
+        if (!confirm("登録しますか？")) return; // 確認ダイアログ
+
+        // 1. 抽選アイドル管理の前回抽選列を全解除
+        document.querySelectorAll("#idol-table tbody tr").forEach(tr => {
+            const prevCb = tr.cells[0]?.querySelector("input[type=checkbox]");
+            if (prevCb) prevCb.checked = false;
+        });
+
+        // 2. 履歴テーブルの出演チェックがある行のアイドルに prev を付与
+        const historyCbs = document.querySelectorAll(".history-checkbox");
+        historyCbs.forEach((cb, idx) => {
+            if (cb.checked) {
+                const entry = lotteryHistory[idx];
+                if (entry && Array.isArray(entry.idols)) {
+                    entry.idols.forEach(idol => {
+                        const target = idolList.find(i => i.name === idol.name);
+                        if (target) target.prev = true;
+                    });
+                }
+            }
+        });
+
+        // 3. 抽選済み列も全解除
+        document.querySelectorAll("#idol-table tbody tr").forEach(tr => {
+            const doneCb = tr.cells[1]?.querySelector("input[type=checkbox]");
+            if (doneCb) doneCb.checked = false;
+        });
+        // 更新を永続化するため idolList の done フラグもリセット
+        idolList.forEach(i => { i.done = false; });
+
+        saveData();
+        renderIdolTable();
     });
 
     // 管理操作
@@ -637,7 +746,7 @@ function initAllEvents() {
             });
         });
     }
-// 特殊回ON/OFF
+    // 特殊回ON/OFF
     document.getElementById("vol-string-enable")?.addEventListener("change", rebuildLotteryRowsForSpecial);
 
     // 特殊回人数の保持 + 再構築
@@ -708,6 +817,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     await loadFromSpreadsheet();
 
     rebuildLotteryRowsForSpecial();
+    renderLotteryHistory();
 });
 
 // ==============================
@@ -723,4 +833,16 @@ function applyVolumeToMedia(video) {
 
     video.muted = muteEnabled;
     video.volume = getGlobalVolume();
+}
+
+// =================================
+// 6. その他関数
+// =================================
+function saveLotteryHistory(obj) {
+    try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(obj));
+    } catch (e) {
+        console.error('Failed to save lottery history to localStorage:', e);
+        throw e;
+    }
 }

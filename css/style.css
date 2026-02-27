@@ -336,6 +336,10 @@ td.editable-winCount {
 #btn-lot-regular {
     background-color: #27ae60; /* 緑：通常 */
 }
+#register-appearance {
+    background-color: #3498db; /* 青：出演登録 */
+    margin-left: 24px; /* optional spacing */
+}
 #clear-lottery {
     background-color: #555555; /* グレー：リセット*/
 }
