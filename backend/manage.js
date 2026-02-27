@@ -642,6 +642,8 @@ function initAllEvents() {
         if (!confirm("登録しますか？")) return; // 確認ダイアログ
 
         // 1. 抽選アイドル管理の前回抽選列を全解除
+        //    → 表示だけでなく内部データもクリア
+        idolList.forEach(i => { i.prev = false; });
         document.querySelectorAll("#idol-table tbody tr").forEach(tr => {
             const prevCb = tr.cells[0]?.querySelector("input[type=checkbox]");
             if (prevCb) prevCb.checked = false;
