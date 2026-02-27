@@ -359,28 +359,21 @@ td.editable-winCount {
 
 /* 背景が途切れる問題：html/body全体に適用 */
 html, body {
-    /* force full height only if needed by background; otherwise allow content height */
-    height: auto;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
 body {
-    /* remove hard 100vh so page height matches content; allow width to be determined
-       by content rather than forcing full viewport. center if narrower. */
-    min-height: auto;
-    width: auto;
-    margin: 0 auto;
+    min-height: 100vh;
     background-attachment: fixed; /* これでスクロールしても背景が動かない */
 }
 
 /* 抽選タブの背景範囲を修正 */
 #tab-view {
     background-color: #BCE981;
-    /* allow the view to grow with its content instead of filling the viewport */
-    min-height: auto;
-    width: auto;
-    max-width: 100%;
+    min-height: 100vh;
+    width: 100%;
     box-sizing: border-box;
     padding-bottom: 50px;
 }
@@ -519,36 +512,14 @@ body {
     body {
         transform: scale(0.75);
         transform-origin: top left;
-        /* width auto so scaled content keeps its natural width; may not fill
-           viewport but that's acceptable when shrinking to content */
-        width: auto;
+        width: 133.3333%; /* inverse of 0.75 */
         /* ensure minimum height expands to account for scaling */
         min-height: calc(100vh / 0.75);
     }
     /* ensure tab view also stretches under scaling */
     #tab-view {
         min-height: calc(100vh / 0.75);
-        width: auto;
-    }
-
-    /* when the entire body is shrunk to 75%, fixed overlays/video
-       also shrink, leaving black bars.   Undo the shrink by expanding
-       the overlay dimensions so that after the 0.75 scale they still
-       cover the viewport. */
-    #puchun-overlay,
-    #click-overlay,
-    #deresute-overlay {
-        width: calc(100vw / 0.75);
-        height: calc(100vh / 0.75);
-    }
-
-    /* make video elements themselves fill the corrected overlay
-       area as well (object-fit:cover already applied). */
-    #puchun-video,
-    #click-video,
-    #deresute-video {
         width: 100%;
-        height: 100%;
     }
 }
 
