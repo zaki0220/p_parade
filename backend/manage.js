@@ -775,6 +775,8 @@ function initAllEvents() {
 // ==============================
 window.addEventListener("DOMContentLoaded", async () => {
     initAllEvents();
+
+    setupRegistrationEvent();
     
     // UI復元
     const vIn = document.getElementById("vol-string-input");
@@ -847,4 +849,74 @@ function saveLotteryHistory(obj) {
         console.error('Failed to save lottery history to localStorage:', e);
         throw e;
     }
+}
+
+// 新規応募者の登録
+function setupRegistrationEvent() {
+    const btn = document.getElementById("btn-register-performer");
+    // ボタンが存在しない場合は何もしない（エラー防止）
+    if (!btn) return;
+
+    btn.addEventListener("click", async () => {
+        const nameInput = document.getElementById("reg-name");
+        const twitterInput = document.getElementById("reg-twitter");
+        
+        const name = nameInput.value.trim();
+        let twitter = twitterInput.value.trim();
+
+        // バリデーション
+        if (!name || !twitter) {
+            alert("名前とTwitterIDを入力してください。");
+            return;
+        }
+
+        // TwitterIDの整形（先頭の@を削除）
+        if (twitter.startsWith("@")) {
+            twitter = twitter.substring(1);
+        }
+
+        if (!confirm(`【確認】\n名前: ${name}\nTwitterID: @${twitter}\n\nこの内容で登録・更新しますか？`)) {
+            return;
+        }
+
+        // ボタンを無効化（連打防止）
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = "登録中...";
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "registerPerformer",
+                    name: name,
+                    twitterId: twitter
+                })
+            });
+
+            if (!response.ok) throw new Error("ネットワークレスポンスが正常ではありません");
+
+            const resData = await response.json();
+
+            if (resData.success) {
+                alert("スプレッドシートへの登録・更新が完了しました。");
+                
+                // 入力欄をクリア
+                nameInput.value = "";
+                twitterInput.value = "";
+
+                // アプリ内の最新情報を再取得して表示を更新
+                await loadFromSpreadsheet();
+            } else {
+                alert("GAS側でエラーが発生しました: " + (resData.message || "不明なエラー"));
+            }
+        } catch (e) {
+            console.error("Registration Error:", e);
+            alert("通信に失敗しました。GASのデプロイURLや設定を確認してください。");
+        } finally {
+            // ボタンを元に戻す
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
 }
