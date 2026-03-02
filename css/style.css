@@ -189,7 +189,8 @@ td.editable-winCount {
     font-size: 24px;
     font-weight: lighter;
     border-collapse: collapse;
-    width: 96%;
+    /* 表示幅はおおよそ画面の2/3程度に抑える */
+    width: 66%;
     table-layout: fixed;
     margin: 0 0 0 24px;
     background-color: #ffffff;
