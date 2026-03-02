@@ -3,7 +3,7 @@ body {
 }
 
 .logo-img {
-    max-height: 300px;
+    max-height: 200px;
     width: auto;
 }
 
@@ -28,7 +28,7 @@ body {
 
 #vol-text {
     font-family: 'Kavoon', cursive;
-    font-size: 130px;
+    font-size: 80px;
     letter-spacing: 1px;
     display: flex;
     align-items: flex-end;
@@ -186,11 +186,10 @@ td.editable-winCount {
 
 #lottery-table {
     font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
-    font-size: 24px;
+    font-size: 33px;
     font-weight: lighter;
     border-collapse: collapse;
-    /* 表示幅はおおよそ画面の2/3程度に抑える */
-    width: 66%;
+    width: 75%;
     table-layout: fixed;
     margin: 0 0 0 24px;
     background-color: #ffffff;
@@ -199,11 +198,11 @@ td.editable-winCount {
 }
 
 #lottery-table tr {
-    height: 72px; /* 行の高さを統一 */
+    height: 85px; /* 行の高さを統一 */
 }
 
 #lottery-table td {
-    height: 72px;             /* ヘッダーと同じ高さに固定 */
+    height: 85px;             /* ヘッダーと同じ高さに固定 */
     text-align: center;       /* 横中央 */
     vertical-align: middle;   /* 縦中央 */
 }
@@ -306,7 +305,7 @@ td.editable-winCount {
 /* 共通：名前が入った時の文字サイズ調整 */
 #lottery-table td:first-child {
     font-family: 'Kosugi Maru', sans-serif;
-    font-size: 24px;
+    font-size: 33px;
     color: #333;
 }
 
@@ -414,7 +413,7 @@ body {
 }
 
 .idol-icon {
-    width: 30px;
+    width: 33px;
     height: auto;
     object-fit: contain;
 }
