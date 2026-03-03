@@ -628,6 +628,7 @@ function initAllEvents() {
             // 🎯 ここで初めて結果表示
             cell.innerHTML = result.html;
             saveLotteryTable();
+            checkAndAutoSave(); // 全枠埋まっている場合は結果を登録する
         }
     });
 
@@ -919,4 +920,115 @@ function setupRegistrationEvent() {
             btn.textContent = originalText;
         }
     });
+}
+
+/**
+ * 表がすべて埋まっているか確認し、埋まっていれば自動保存する
+ */
+function checkAndAutoSave() {
+    // ID重複問題があるため、クラス名で両方のテーブルを確実に取得する
+    const mainTable = document.querySelector(".main-lottery");
+    const backupTable = document.querySelector(".backup-lottery");
+    
+    // 判定に使うための変数
+    let isLastBackupDjFilled = false;
+    let hasLotteryButton = false;
+
+    // 1. 補欠テーブルから「最後の行」を判定
+    if (backupTable) {
+        const backupRows = Array.from(backupTable.querySelectorAll("tr.row-backup"));
+        if (backupRows.length > 0) {
+            const lastRow = backupRows[backupRows.length - 1];
+            // DJ名（1番目のセル）
+            isLastBackupDjFilled = lastRow.cells[0].textContent.trim() !== "";
+        }
+    }
+
+    // 2. 画面全体（通常＋補欠）に「アイドル抽選」ボタンが残っているか確認
+    const allButtons = Array.from(document.querySelectorAll("button.lottery-execution-btn"));
+    hasLotteryButton = allButtons.length > 0;
+
+    // 条件：補欠の最後にDJがいて、その抽選も終わり、他にボタンが一つもない
+    if (isLastBackupDjFilled && !hasLotteryButton) {
+        // alert("🎉全枠完了を検知しました。GASへ送信します。");
+        saveLotteryResultsToGAS(true);
+    }
+}
+
+/**
+ * 抽選結果をスプレッドシートの「抽選履歴」シートへ保存する
+ * @param {boolean} isAuto - trueの場合、確認ダイアログを表示せずに保存を実行する
+ */
+async function saveLotteryResultsToGAS(isAuto = false) {
+    const volInput = document.getElementById("count-input");
+    const volNum = volInput ? volInput.value : "";
+    const rows = document.querySelectorAll("#lottery-table tbody tr");
+    const results = [];
+
+    rows.forEach((row) => {
+        const pName = row.cells[0].textContent.trim();
+        // セル内のテキスト（例: "アイドルA / アイドルB / アイドルC"）を取得
+        const idolRawText = row.cells[1].textContent.trim();
+
+        // 演者名があり、かつ「抽選」という文字が含まれていない（＝結果が出ている）場合のみ対象
+        if (pName && idolRawText && !idolRawText.includes("抽選")) {
+            
+            // 1. スラッシュで分割して個別の名前の配列にする
+            // map(n => n.trim()) で前後の余計な空白を消去
+            const idolNames = idolRawText.split("/").map(name => name.trim());
+
+            // 2. クラス名から区分（通常/補欠）を判定
+            const type = row.classList.contains("row-backup") ? "補欠" : "通常";
+
+            // 3. 各アイドル名を idolList から探して ID に変換する
+            const idolIds = idolNames.map(name => {
+                // idolList の各要素 i に対して「名前」が一致するものを検索
+                const found = idolList.find(i => (i.名前 || i.name) === name);
+                // 見つかれば ID（またはid）を返し、なければ名前をそのまま返す
+                return found ? (found.ID || found.id) : name;
+            });
+
+            // 4. GASへ送るためのデータ構造を作成
+            results.push({
+                performerName: pName,
+                type: type,
+                idolIds: idolIds // [id1, id2, id3] の配列形式
+            });
+        }
+    });
+
+    // 保存対象が一件もない場合は何もしない
+    if (results.length === 0) return;
+
+    // 手動保存時（isAutoがfalse）のみ確認ダイアログを表示
+    if (!isAuto) {
+        if (!confirm(`Vol.${volNum} の結果を ${results.length} 件保存しますか？`)) return;
+    }
+
+    try {
+        const response = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "saveLotteryResults",
+                vol: volNum,
+                results: results
+            })
+        });
+
+        const res = await response.json();
+
+        if (res.success) {
+            if (isAuto) {
+                console.log("【自動保存】スプレッドシートへの保存が完了しました。");
+            } else {
+                alert("スプレッドシートへ保存しました。");
+            }
+        } else {
+            console.error("保存失敗:", res.message);
+            if (!isAuto) alert("保存に失敗しました: " + res.message);
+        }
+    } catch (e) {
+        console.error("通信エラー:", e);
+        if (!isAuto) alert("通信エラーが発生しました。GASの設定を確認してください。");
+    }
 }
